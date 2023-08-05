@@ -153,3 +153,7 @@ cython_debug/
 
 # project files
 config.ini
+keyboards1.py
+app3.py
+app2.py
+app1.py
