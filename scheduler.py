@@ -1,17 +1,17 @@
-# import aioschedule
+import aioschedule
 
-# import asyncio
+import asyncio
+from pytz import timezone
 
-# from quotes import MotivationalQuote
+from quotes import MotivationalQuote
 
 
-# async def schedule_func():
-#     try:
-#         # aioschedule.every().day.at("08:30").do(MotivationalQuote.get_quote())
-#         aioschedule.every(10).seconds.do(MotivationalQuote.get_quote())
-#         while True:
-#             await aioschedule.run_pending()
-#             await asyncio.sleep(5)
+async def schedule_func():
+    try:
+        aioschedule.every().day.at("06:30").do(MotivationalQuote.send_q_to_me)
+        while True:
+            await aioschedule.run_pending()
+            await asyncio.sleep(5)
 
-#     except Exception as error:
-#         print(error)
+    except Exception as error:
+        print(error)

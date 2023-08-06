@@ -17,7 +17,13 @@ HELP_MSG = "Push one of the buttons below 👇"
 
 DESC_MSG = "I'm not just a virtual assistant, I'm your bro, who is here to ride shotgun \
 and assist you. If you need to check the weather, excahnge rates etc., just holler broski!😘🫡\n\n\
-Some new commands will be added soon 😉"
+Some new commands will be added soon 😉\n\n\
+/start - Starts the bot\n\
+/help - The list of available commands\n\
+/desc - The bot description\n\
+/exchange_rate - An actual exchange rates\n\
+/weather - Show a weather in one of the listed cities\n \
+/quote - Get a quote of the day."
 
 WEATHER_MSG = "Choose one of the cities below 👇"
 

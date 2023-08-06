@@ -4,20 +4,18 @@ import random
 from aiogram import Bot, Dispatcher, types, executor
 from aiogram.types import ReplyKeyboardRemove
 
-from main import API_KEY
+from main import API_KEY, bot, dp
 from commands import START_MSG, HELP_MSG, DESC_MSG, WEATHER_MSG, cats_stickers
 from keyboards import kb, ikb
 from exchange import exch_rate_msg
 from weather import CityWeather
 from quotes import MotivationalQuote
-
-bot = Bot(API_KEY)
-dp = Dispatcher(bot)
+from scheduler import schedule_func
 
 
 async def on_startup(_):
-    print("Bot is starting...")
-    # asyncio.create_task(schedule_func())
+    print("The bot is running...")
+    asyncio.create_task(schedule_func())
 
 
 @dp.message_handler(commands=["start"])
@@ -33,6 +31,7 @@ async def help_cmd(msg: types.Message):
 @dp.message_handler(commands=["desc"])
 async def desc_cmd(msg: types.Message):
     await msg.answer(text=DESC_MSG, reply_markup=ReplyKeyboardRemove())
+    await msg.delete()
 
 
 @dp.message_handler(commands=["exchange_rate"])
@@ -52,6 +51,7 @@ async def quote_cmd(msg: types.Message):
     await bot.send_sticker(
         chat_id=msg.from_user.id, sticker=random.choice(cats_stickers)
     )
+    await msg.delete()
 
 
 @dp.callback_query_handler(lambda callback_query: callback_query.data)
