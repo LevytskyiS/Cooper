@@ -20,3 +20,12 @@ and assist you. If you need to check the weather, excahnge rates etc., just holl
 Some new commands will be added soon 😉"
 
 WEATHER_MSG = "Choose one of the cities below 👇"
+
+cats_stickers = [
+    "CAACAgIAAxkBAAEIiAhkNC37H2J7A_FbzUAsyqzsDsS1LAACHwADobYRCL2v7UTV4wIULwQ",
+    "CAACAgIAAxkBAAEJ77Rkz6AavO85h_j9gXzXsy-xX-_igAACOAEAAhZ8aAP0b0MaIxsr8S8E",
+    "CAACAgIAAxkBAAEJ77hkz6BAtGtnbAdZYCTlZ3kdTETyzgACDgADobYRCKW5cu3wl5UWLwQ",
+    "CAACAgQAAxkBAAEJ77pkz6BWyxJ7lmT10tBGyx7cdAObtgAC0AIAAmHWZA9aLMxRLBXQzS8E",
+    "CAACAgIAAxkBAAEJ77xkz6BmS57ImFPVSPoBmjoMRma1CgACjAADobYRCEqu5Dsi-7l6LwQ",
+    "CAACAgIAAxkBAAEJ775kz6CV4Z90AAGHaW_EBhuuabAY_bUAAsUBAAIWfGgDMtslhlOEjH8vBA",
+]

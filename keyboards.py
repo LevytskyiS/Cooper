@@ -1,6 +1,5 @@
 from aiogram.types import (
     ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
     KeyboardButton,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
@@ -12,7 +11,9 @@ b1 = KeyboardButton("/help")
 b2 = KeyboardButton("/desc")
 b3 = KeyboardButton("/exchange_rate")
 b4 = KeyboardButton("/weather")
-kb.add(b1).insert(b2).insert(b3).insert(b4)
+b5 = KeyboardButton("/quote")
+kb.add(b1).insert(b2).insert(b3)
+kb.add(b4).insert(b5)
 
 ikb = InlineKeyboardMarkup()
 ib1 = InlineKeyboardButton(text="Prague", callback_data="Prague")

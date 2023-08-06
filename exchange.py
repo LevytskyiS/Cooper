@@ -27,7 +27,19 @@ for element in list_of_rates:
         curr_name.append(element.split("|")[-2])
         exch_rate.append(element.split("|")[-1])
 
-exchange_rates = pd.DataFrame(
-    {"date": current_date, "currency": curr_name, "rate": exch_rate},
-    index=[i for i in range(1, len(exch_rate) + 1)],
-)
+# exchange_rates = pd.DataFrame(
+#     {"date": current_date, "currency": curr_name, "rate": exch_rate},
+#     index=[i for i in range(1, len(exch_rate) + 1)],
+# )
+
+
+def get_exch_rate_msg(names: list, currencies: list) -> str:
+    """Returns a message with exchange rates of the given currencies"""
+    msg = "🤑 💰 💶\n"
+    for n, c in zip(names, currencies):
+        row = f"{n}: {c}\n"
+        msg += row
+    return msg.strip()
+
+
+exch_rate_msg = get_exch_rate_msg(curr_name, exch_rate)

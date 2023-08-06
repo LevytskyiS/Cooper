@@ -1,11 +1,15 @@
+import asyncio
+import random
+
 from aiogram import Bot, Dispatcher, types, executor
 from aiogram.types import ReplyKeyboardRemove
 
 from main import API_KEY
-from commands import START_MSG, HELP_MSG, DESC_MSG, WEATHER_MSG
+from commands import START_MSG, HELP_MSG, DESC_MSG, WEATHER_MSG, cats_stickers
 from keyboards import kb, ikb
-from exchange import exchange_rates
+from exchange import exch_rate_msg
 from weather import CityWeather
+from quotes import MotivationalQuote
 
 bot = Bot(API_KEY)
 dp = Dispatcher(bot)
@@ -13,6 +17,7 @@ dp = Dispatcher(bot)
 
 async def on_startup(_):
     print("Bot is starting...")
+    # asyncio.create_task(schedule_func())
 
 
 @dp.message_handler(commands=["start"])
@@ -32,12 +37,21 @@ async def desc_cmd(msg: types.Message):
 
 @dp.message_handler(commands=["exchange_rate"])
 async def exch_rate_cmd(msg: types.Message):
-    await msg.answer(text=exchange_rates, reply_markup=ReplyKeyboardRemove())
+    await msg.answer(text=exch_rate_msg, reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler(commands=["weather"])
 async def weather_cmd(msg: types.Message):
     await msg.answer(text=WEATHER_MSG, reply_markup=ikb)
+
+
+@dp.message_handler(commands=["quote"])
+async def quote_cmd(msg: types.Message):
+    quote = await MotivationalQuote.get_quote()
+    await msg.answer(text=quote, parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+    await bot.send_sticker(
+        chat_id=msg.from_user.id, sticker=random.choice(cats_stickers)
+    )
 
 
 @dp.callback_query_handler(lambda callback_query: callback_query.data)
