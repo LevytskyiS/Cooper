@@ -1,7 +1,7 @@
 import asyncio
 import random
 
-from aiogram import Bot, Dispatcher, types, executor
+from aiogram import types, executor
 from aiogram.types import ReplyKeyboardRemove
 
 from main import API_KEY, bot, dp
