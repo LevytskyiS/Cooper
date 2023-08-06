@@ -3,6 +3,7 @@ HELP_COMMAND = """
 /help - The list of available commands
 /desc - The bot description
 /exchange_rate - An actual exchange rates
+/weather - Show a weather in one of the listed cities
 """
 
 START_MSG = "Hi!✌️\n\nI'm Cooper and I'm your ultimate wingman, ready to drop some knowledge \
@@ -17,3 +18,5 @@ HELP_MSG = "Push one of the buttons below 👇"
 DESC_MSG = "I'm not just a virtual assistant, I'm your bro, who is here to ride shotgun \
 and assist you. If you need to check the weather, excahnge rates etc., just holler broski!😘🫡\n\n\
 Some new commands will be added soon 😉"
+
+WEATHER_MSG = "Choose one of the cities below 👇"
