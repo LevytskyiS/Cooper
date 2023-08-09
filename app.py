@@ -11,6 +11,7 @@ from exchange import exch_rate_msg
 from weather import CityWeather
 from quotes import MotivationalQuote
 from scheduler import schedule_func
+from pokemon import SendPokemon
 
 
 async def on_startup(_):
@@ -30,13 +31,13 @@ async def help_cmd(msg: types.Message):
 
 @dp.message_handler(commands=["desc"])
 async def desc_cmd(msg: types.Message):
-    await msg.answer(text=DESC_MSG, reply_markup=ReplyKeyboardRemove())
+    await msg.answer(text=DESC_MSG)
     await msg.delete()
 
 
 @dp.message_handler(commands=["exchange_rate"])
 async def exch_rate_cmd(msg: types.Message):
-    await msg.answer(text=exch_rate_msg, reply_markup=ReplyKeyboardRemove())
+    await msg.answer(text=exch_rate_msg)
 
 
 @dp.message_handler(commands=["weather"])
@@ -47,7 +48,7 @@ async def weather_cmd(msg: types.Message):
 @dp.message_handler(commands=["quote"])
 async def quote_cmd(msg: types.Message):
     quote = await MotivationalQuote.get_quote()
-    await msg.answer(text=quote, parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+    await msg.answer(text=quote, parse_mode="HTML")
     await bot.send_sticker(
         chat_id=msg.from_user.id, sticker=random.choice(cats_stickers)
     )
@@ -57,9 +58,15 @@ async def quote_cmd(msg: types.Message):
 @dp.callback_query_handler(lambda callback_query: callback_query.data)
 async def weather_cb_handler(callback: types.CallbackQuery):
     msg_weather = await CityWeather.get_weather(callback.data)
-    await callback.message.answer(
-        text=msg_weather, parse_mode="HTML", reply_markup=ReplyKeyboardRemove()
-    )
+    await callback.message.answer(text=msg_weather, parse_mode="HTML")
+
+
+@dp.message_handler(commands=["pokemon"])
+async def pokemon_cmd(msg: types.Message):
+    name, image, description = await SendPokemon.send_pokemon()
+    await msg.answer(text=f"{name} 🤩\n\n{description}")
+    await bot.send_photo(chat_id=msg.from_user.id, photo=image)
+    await msg.delete()
 
 
 if __name__ == "__main__":

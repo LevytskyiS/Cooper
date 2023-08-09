@@ -1,9 +1,10 @@
 HELP_COMMAND = """ 
 /start - Starts the bot
 /help - The list of available commands
-/desc - The bot description
-/exchange_rate - An actual exchange rates
-/weather - Show a weather in one of the listed cities
+/desc - Bot's description
+/exchange_rate - Actual exchange rates
+/weather - Shows a weather in one of the listed cities
+/pokemon - Shows a random pokémon
 """
 
 START_MSG = "Hi!✌️\n\nI'm Cooper and I'm your ultimate wingman, ready to drop some knowledge \
