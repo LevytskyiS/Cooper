@@ -1,6 +1,8 @@
 import requests
 import random
 
+from main import MY_ID, bot
+
 
 class SendPokemon:
     @staticmethod
@@ -40,3 +42,9 @@ class SendPokemon:
         image = await SendPokemon.get_pokemon_image(pokemon_json)
         description = await SendPokemon.get_description(pokemon_json)
         return pokemon.capitalize(), image, description
+
+    @staticmethod
+    async def send_me_pokemon():
+        pokemon, image, desc = await SendPokemon.send_pokemon()
+        await bot.send_message(chat_id=MY_ID, text=f"{pokemon} 🤩\n\n{desc}")
+        await bot.send_photo(chat_id=MY_ID, photo=image)

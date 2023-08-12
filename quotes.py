@@ -2,7 +2,7 @@ import random
 
 import requests
 
-from main import bot
+from main import bot, MY_ID
 from commands import cats_stickers
 
 
@@ -14,7 +14,6 @@ class MotivationalQuote:
         json_data = response.json()
 
         msg = f"<em>{json_data[0]['q']}</em>\n\n<b>{json_data[0]['a']}</b>"
-        # msg2 = json_data[0]["h"]
         return msg
 
     @staticmethod
