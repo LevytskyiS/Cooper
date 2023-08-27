@@ -100,11 +100,9 @@ class PragueApartments:
                 }
             )
 
-            df_to_save = (
-                pd.concat([df, ndf])
-                .sort_values(by="price", ascending=False)
-                .reset_index()
-            )
+            ndf = ndf.sort_values(by="price", ascending=False).reset_index()
+
+            df_to_save = pd.concat([df, ndf])
 
             df_to_save.to_csv(
                 csv_file, columns=["date", "f_id", "price", "location", "link"]
