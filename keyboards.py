@@ -13,8 +13,13 @@ b3 = KeyboardButton("/exchange_rate")
 b4 = KeyboardButton("/weather")
 b5 = KeyboardButton("/quote")
 b6 = KeyboardButton("/pokemon")
+b7 = KeyboardButton("/chuck")
+b8 = KeyboardButton("/activity")
+b9 = KeyboardButton("/prague")
+
 kb.add(b1).insert(b2).insert(b3)
 kb.add(b4).insert(b5).insert(b6)
+kb.add(b7).insert(b8).insert(b9)
 
 ikb = InlineKeyboardMarkup()
 ib1 = InlineKeyboardButton(text="Prague", callback_data="Prague")

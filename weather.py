@@ -9,7 +9,7 @@ from main import API_WEATHER
 class CityWeather:
     @staticmethod
     async def get_weather(city):
-        geolocator = Nominatim(user_agent="geoapiExercises")
+        geolocator = Nominatim(user_agent="cooper")
         location = geolocator.geocode(city)
         obj = TimezoneFinder()
 
@@ -35,4 +35,5 @@ Weather description: <em>{weather}, {weather_desc}</em>.\n\
 Pressure: <em>{pressure} hPa</em>.\n\
 Visibility: <em>{visibility} m</em>.\n\
 Wind speed: <em>{wind} m/s</em>."
+
         return weather_msg

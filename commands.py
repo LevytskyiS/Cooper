@@ -5,6 +5,8 @@ HELP_COMMAND = """
 /exchange_rate - Actual exchange rates
 /weather - Shows a weather in one of the listed cities
 /pokemon - Shows a random pokémon
+/chuck - Get a random joke about Chuck Norris
+/activity - Get a random activity if you are bored
 """
 
 START_MSG = "Hi!✌️\n\nI'm Cooper and I'm your ultimate wingman, ready to drop some knowledge \
@@ -24,7 +26,10 @@ Some new commands will be added soon 😉\n\n\
 /desc - The bot description\n\
 /exchange_rate - An actual exchange rates\n\
 /weather - Show a weather in one of the listed cities\n \
-/quote - Get a quote of the day."
+/quote - Get a quote of the day\n \
+/pokemon - Shows a random pokémon\n \
+/chuck - Get a random joke about Chuck Norris\n \
+/activity - Get a random activity if you are bored"
 
 WEATHER_MSG = "Choose one of the cities below 👇"
 

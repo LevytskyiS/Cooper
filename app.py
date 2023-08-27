@@ -3,6 +3,7 @@ import random
 
 from aiogram import types, executor
 from aiogram.types import ReplyKeyboardRemove
+from aiogram.types.input_file import InputFile
 
 from main import API_KEY, bot, dp
 from commands import START_MSG, HELP_MSG, DESC_MSG, WEATHER_MSG, cats_stickers
@@ -12,6 +13,9 @@ from weather import CityWeather
 from quotes import MotivationalQuote
 from scheduler import schedule_func
 from pokemon import SendPokemon
+from chuck import ChuckJokes
+from bored import get_activity
+from prag_ap import PragueApartments
 
 
 async def on_startup(_):
@@ -67,6 +71,27 @@ async def pokemon_cmd(msg: types.Message):
     await msg.answer(text=f"{name} 🤩\n\n{description}")
     await bot.send_photo(chat_id=msg.from_user.id, photo=image)
     await msg.delete()
+
+
+@dp.message_handler(commands=["chuck"])
+async def chuck_norris_jokes_cmd(msg: types.Message):
+    # joke, icon = await ChuckJokes.get_joke()
+    joke = await ChuckJokes.get_joke()
+    await msg.answer(text=joke)
+    # await bot.send_photo(chat_id=msg.from_user.id, photo=icon)
+
+
+@dp.message_handler(commands=["activity"])
+async def activity_cmd(msg: types.Message):
+    activity = await get_activity()
+    await msg.answer(text=activity)
+
+
+@dp.message_handler(commands=["prague"])
+async def prague_flats_cmd(msg: types.Message):
+    message, csv_file = await PragueApartments.get_new_flats()
+    await msg.answer(text=message)
+    await bot.send_document(chat_id=msg.from_user.id, document=csv_file)
 
 
 if __name__ == "__main__":
