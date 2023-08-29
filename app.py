@@ -91,7 +91,7 @@ async def activity_cmd(msg: types.Message):
 async def prague_flats_cmd(msg: types.Message):
     message, csv_file = await PragueApartments.get_new_flats()
     await msg.answer(text=message)
-    await bot.send_document(chat_id=msg.from_user.id, document=csv_file)
+    await bot.send_document(chat_id=msg.from_user.id, document=InputFile(csv_file))
 
 
 if __name__ == "__main__":

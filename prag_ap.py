@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 from aiogram.types.input_file import InputFile
 
 from ch_driver import GetChromeDriver
+from main import bot, MY_ID
+
 
 NUMS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
@@ -114,7 +116,13 @@ class PragueApartments:
     async def get_new_flats():
         new_flats = await PragueApartments.get_basic_data()
         msg, csv_file = await PragueApartments.get_csv(new_flats)
-        return msg, InputFile(csv_file)
+        return msg, csv_file
+
+    @staticmethod
+    async def send_me_new_flats():
+        msg, csv_file = await PragueApartments.get_new_flats()
+        await bot.send_message(chat_id=MY_ID, text=msg)
+        await bot.send_document(chat_id=MY_ID, document=InputFile(csv_file))
 
 
 # asyncio.run(PragueApartments.get_new_flats())
