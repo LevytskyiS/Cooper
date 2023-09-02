@@ -5,11 +5,19 @@ from pytz import timezone
 
 from quotes import MotivationalQuote
 from prag_ap import PragueApartments
+from jobcz.vacancies import NewVacancies
 
 
 async def schedule_func():
     try:
         aioschedule.every().day.at("06:30").do(MotivationalQuote.send_q_to_me)
+
+        aioschedule.every().day.at("10:00").do(NewVacancies.send_me_report)
+        aioschedule.every().day.at("12:00").do(NewVacancies.send_me_report)
+        aioschedule.every().day.at("14:00").do(NewVacancies.send_me_report)
+        aioschedule.every().day.at("16:00").do(NewVacancies.send_me_report)
+        aioschedule.every().day.at("18:00").do(NewVacancies.send_me_report)
+
         aioschedule.every().day.at("08:00").do(PragueApartments.send_me_new_flats)
         aioschedule.every().day.at("10:00").do(PragueApartments.send_me_new_flats)
         aioschedule.every().day.at("12:00").do(PragueApartments.send_me_new_flats)

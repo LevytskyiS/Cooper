@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 class GetChromeDriver:
     @staticmethod
     async def get_chrome_driver() -> webdriver.Chrome:
+        # def get_chrome_driver() -> webdriver.Chrome:
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--incognito")
