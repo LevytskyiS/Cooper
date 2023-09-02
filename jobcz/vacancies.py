@@ -67,7 +67,7 @@ class PraceCZ:
 class NewVacancies:
     @staticmethod
     async def send_me_report():
-        msg, csv_file = NewVacancies.main()
+        msg, csv_file = await NewVacancies.main()
         await bot.send_message(chat_id=MY_ID, text=msg)
         await bot.send_document(chat_id=MY_ID, document=InputFile(csv_file))
 
