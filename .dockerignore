@@ -1,0 +1,11 @@
+# project files
+config.ini
+keyboards1.py
+app3.py
+app2.py
+app1.py
+data/flats.csv
+page.txt
+data/vacancies.csv
+create_docker_container.txt
+__pycache__

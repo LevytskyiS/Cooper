@@ -2,7 +2,7 @@ import random
 
 import requests
 
-from main import bot, MY_ID
+from conf import bot, MY_ID
 from commands import cats_stickers
 
 

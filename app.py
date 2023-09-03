@@ -2,10 +2,9 @@ import asyncio
 import random
 
 from aiogram import types, executor
-from aiogram.types import ReplyKeyboardRemove
 from aiogram.types.input_file import InputFile
 
-from main import API_KEY, bot, dp
+from conf import bot, dp
 from commands import START_MSG, HELP_MSG, DESC_MSG, WEATHER_MSG, cats_stickers
 from keyboards import kb, ikb
 from exchange import exch_rate_msg

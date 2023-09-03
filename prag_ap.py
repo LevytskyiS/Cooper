@@ -3,13 +3,11 @@ import datetime
 import asyncio
 
 import pandas as pd
-import numpy as np
-import requests
 from bs4 import BeautifulSoup
 from aiogram.types.input_file import InputFile
 
 from ch_driver import GetChromeDriver
-from main import bot, MY_ID
+from conf import bot, MY_ID
 
 
 NUMS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]

@@ -3,7 +3,7 @@ import pytz
 from geopy.geocoders import Nominatim
 from timezonefinder import TimezoneFinder
 
-from main import API_WEATHER
+from conf import API_WEATHER
 
 
 class CityWeather:

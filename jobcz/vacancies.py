@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from bs4.element import ResultSet
 from aiogram.types.input_file import InputFile
 
-from main import MY_ID, bot
+from conf import MY_ID, bot
 
 
 class JobStack:

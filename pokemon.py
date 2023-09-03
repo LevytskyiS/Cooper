@@ -1,7 +1,7 @@
 import requests
 import random
 
-from main import MY_ID, bot
+from conf import MY_ID, bot
 
 
 class SendPokemon:
