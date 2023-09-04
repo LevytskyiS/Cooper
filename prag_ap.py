@@ -1,7 +1,10 @@
 import time
 import datetime
 import asyncio
+import re
+import random
 
+import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from aiogram.types.input_file import InputFile
@@ -31,14 +34,7 @@ class PragueApartments:
     async def get_basic_data():
         result = []
         page = await PragueApartments.get_page_source()
-
-        with open("page.txt", "w", encoding="utf-8") as file:
-            file.write(page)
-
-        with open("page.txt", "r", encoding="utf-8") as file:
-            source = file.read()
-
-        soup = BeautifulSoup(source, "lxml")
+        soup = BeautifulSoup(page, "lxml")
         flats = soup.find("div", class_="dir-property-list").find_all(
             "span", class_="basic"
         )
@@ -60,13 +56,136 @@ class PragueApartments:
             )
         return result
 
+
+class Bezrealitky:
     @staticmethod
-    async def check_existing_ids(df: pd.DataFrame, flats: list):
+    async def find_flats() -> list:
+        flats = []
+        urls = [
+            "https://www.bezrealitky.cz/vyhledat?offerType=PRONAJEM&estateType=BYT&disposition=DISP_1_1&disposition=DISP_2_KK&priceTo=15000&regionOsmIds=R20000063962&osm_value=Praha+3%2C+Praha%2C+okres+Hlavní+město+Praha%2C+Hlavní+město+Praha%2C+Praha%2C+Česko",  # Prague 3
+            "https://www.bezrealitky.cz/vyhledat?offerType=PRONAJEM&estateType=BYT&disposition=DISP_1_1&disposition=DISP_2_KK&priceTo=15000&regionOsmIds=R20000063928&osm_value=Praha+2%2C+Praha%2C+okres+Hlavní+město+Praha%2C+Hlavní+město+Praha%2C+Praha%2C+Česko",  # Prague 2
+            "https://www.bezrealitky.cz/vyhledat?offerType=PRONAJEM&estateType=BYT&disposition=DISP_1_1&disposition=DISP_2_KK&priceTo=15000&regionOsmIds=R20000061612&osm_value=Praha+1%2C+Praha%2C+okres+Hlavní+město+Praha%2C+Hlavní+město+Praha%2C+Praha%2C+Česko",  # Prague 1
+            "https://www.bezrealitky.cz/vyhledat?offerType=PRONAJEM&estateType=BYT&disposition=DISP_1_1&disposition=DISP_2_KK&priceTo=15000&regionOsmIds=R20000064370&osm_value=Praha+8%2C+Praha%2C+okres+Hlavní+město+Praha%2C+Hlavní+město+Praha%2C+Praha%2C+Česko",  # Prague 8
+        ]
+
+        for url in urls:
+            response = requests.get(url)
+            time.sleep(random.randint(1, 3))
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, "lxml")
+
+                articles = soup.find_all(
+                    "article",
+                    class_="PropertyCard_propertyCard__moO_5 propertyCard PropertyCard_propertyCard--landscape__XvPmC",
+                )
+                if articles:
+                    flats += articles
+                else:
+                    continue
+        return flats
+
+    @staticmethod
+    async def get_clean_data(flats: list):
+        result = []
+
+        for flat in flats:
+            location = (
+                flat.find(
+                    "h2",
+                    class_="PropertyCard_propertyCardHeadline___diKI mt-4 mt-md-0 mb-0",
+                )
+                .find(
+                    "span",
+                    class_="PropertyCard_propertyCardAddress__hNqyR text-subheadline text-truncate",
+                )
+                .text
+            )
+
+            link = flat.find(
+                "h2",
+                class_="PropertyCard_propertyCardHeadline___diKI mt-4 mt-md-0 mb-0",
+            ).find("a")["href"]
+
+            flat_id = re.findall("\d{3,10}", link)[0]
+
+            price_ = flat.find(
+                "span", class_="PropertyPrice_propertyPriceAmount__WdEE1"
+            ).text.replace("Kč", "")
+            price = int("".join([n for n in price_ if n in NUMS]))
+
+            result.append(
+                {
+                    "date": datetime.datetime.now(),
+                    "f_id": flat_id,
+                    "price": price,
+                    "location": location,
+                    "link": link,
+                }
+            )
+        return result
+
+    @staticmethod
+    async def get_basic_data():
+        flats = await Bezrealitky.find_flats()
+        if flats:
+            clean_data = await Bezrealitky.get_clean_data(flats)
+            return clean_data
+        else:
+            return None
+
+
+class SearchFlats:
+    @staticmethod
+    async def get_new_flats():
+        flats = await asyncio.gather(
+            Bezrealitky.get_basic_data(), PragueApartments.get_basic_data()
+        )
+        csv = await SearchFlats.get_csv(flats)
+        return csv
+
+    @staticmethod
+    async def get_csv(flats: list):
+        csv_file = "data/flats.csv"
+
+        for data in flats:
+            if data:
+                df = pd.read_csv(csv_file)
+                checked_flats = await SearchFlats.check_existing_ids(df, data)
+
+                if checked_flats:
+                    dates = [d["date"] for d in checked_flats]
+                    f_ids = [f["f_id"] for f in checked_flats]
+                    prices = [p["price"] for p in checked_flats]
+                    locations = [l["location"] for l in checked_flats]
+                    links = [l["link"] for l in checked_flats]
+
+                    ndf = pd.DataFrame(
+                        {
+                            "date": dates,
+                            "f_id": f_ids,
+                            "price": prices,
+                            "location": locations,
+                            "link": links,
+                        }
+                    )
+
+                    ndf = ndf.sort_values(by="price", ascending=False).reset_index()
+                    df_to_save = pd.concat([df, ndf]).reset_index()
+                    df_to_save.to_csv(
+                        csv_file, columns=["date", "f_id", "price", "location", "link"]
+                    )
+                else:
+                    continue
+
+        return csv_file
+
+    @staticmethod
+    async def check_existing_ids(df: pd.DataFrame, data: list):
         result = []
         df_ids = df["f_id"]
         df_ids = [int(i) for i in df_ids]
 
-        for flat in flats:
+        for flat in data:
             if int(flat["f_id"]) in df_ids:
                 continue
             else:
@@ -75,55 +194,12 @@ class PragueApartments:
         return result
 
     @staticmethod
-    async def get_csv(flats: list):
-        csv_file = "data/flats.csv"
-        df = pd.read_csv(csv_file)
-        checked_flats = await PragueApartments.check_existing_ids(df, flats)
-
-        if not checked_flats:
-            return "No new flats at the moment", csv_file
-
-        else:
-            dates = [d["date"] for d in checked_flats]
-            f_ids = [f["f_id"] for f in checked_flats]
-            prices = [p["price"] for p in checked_flats]
-            locations = [l["location"] for l in checked_flats]
-            links = [l["link"] for l in checked_flats]
-
-            ndf = pd.DataFrame(
-                {
-                    "date": dates,
-                    "f_id": f_ids,
-                    "price": prices,
-                    "location": locations,
-                    "link": links,
-                }
-            )
-
-            ndf = ndf.sort_values(by="price", ascending=False).reset_index()
-
-            df_to_save = pd.concat([df, ndf]).reset_index()
-
-            df_to_save.to_csv(
-                csv_file, columns=["date", "f_id", "price", "location", "link"]
-            )
-
-            return f"{len(checked_flats)} new apartments were found", csv_file
-
-    @staticmethod
-    async def get_new_flats():
-        new_flats = await PragueApartments.get_basic_data()
-        msg, csv_file = await PragueApartments.get_csv(new_flats)
-        return msg, csv_file
-
-    @staticmethod
     async def send_me_new_flats():
-        msg, csv_file = await PragueApartments.get_new_flats()
-        await bot.send_message(chat_id=MY_ID, text=msg)
+        csv_file = await SearchFlats.get_new_flats()
         await bot.send_document(chat_id=MY_ID, document=InputFile(csv_file))
 
 
-# asyncio.run(PragueApartments.get_new_flats())
+# asyncio.run(SearchFlats.send_me_new_flats())
 
 # df = pd.DataFrame(columns=["date", "f_id", "price", "location", "link"])
 # df.to_csv("data/flats.csv")

@@ -14,7 +14,7 @@ from scheduler import schedule_func
 from pokemon import SendPokemon
 from chuck import ChuckJokes
 from bored import get_activity
-from prag_ap import PragueApartments
+from prag_ap import SearchFlats
 from jobcz.vacancies import NewVacancies
 
 
@@ -89,8 +89,7 @@ async def activity_cmd(msg: types.Message):
 
 @dp.message_handler(commands=["prague"])
 async def prague_flats_cmd(msg: types.Message):
-    message, csv_file = await PragueApartments.get_new_flats()
-    await msg.answer(text=message)
+    csv_file = await SearchFlats.get_new_flats()
     await bot.send_document(chat_id=msg.from_user.id, document=InputFile(csv_file))
 
 
