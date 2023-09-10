@@ -10,6 +10,8 @@ API_WEATHER = config.get("TG", "API_WEATHER")
 MY_ID = config.get("TG", "MY_ID")
 API_MARVEL = config.get("TG", "API_MARVEL")
 PUBLIC_MARVEL = config.get("TG", "PUBLIC_MARVEL")
+LINKEDIN_LOGIN = config.get("TG", "LINKEDIN_LOGIN")
+LINKEDIN_PASSWORD = config.get("TG", "LINKEDIN_PASSWORD")
 
 bot = Bot(API_KEY)
 dp = Dispatcher(bot)
