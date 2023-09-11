@@ -13,6 +13,8 @@ from selenium.webdriver.common.by import By
 
 from ch_driver import GetChromeDriver
 from conf import LINKEDIN_LOGIN, LINKEDIN_PASSWORD
+from mongodb.models import Recruiter
+from mongodb.connect import connect
 
 
 class LinkedIn:
@@ -22,6 +24,7 @@ class LinkedIn:
         # await LinkedIn.save_all_pages(all_recruiters)
         source = await LinkedIn.get_htmls()
         recr_data = await LinkedIn.get_recr_data(source)
+        await LinkedIn.fill_db(recr_data)
 
     @staticmethod
     async def login_get_pages() -> list:
@@ -93,8 +96,23 @@ class LinkedIn:
                     continue
 
                 if link and name:
-                    result.append({"name": name, "link": link, "connect": "Not yet"})
+                    result.append({"name": name, "link": link})
         return result
+
+    @staticmethod
+    async def fill_db(recruiters: list):
+        recr_ids = [i for i in range(1, len(recruiters) + 1)]
+        for i, r in zip(recr_ids, recruiters):
+            recruiter = Recruiter.objects(recr_id=i).first()
+            if not recruiter:
+                try:
+                    recr = Recruiter(recr_id=i, name=r["name"], link=r["link"])
+                    recr.save()
+                    # print(f"User {recr.name} was created successfully.")
+                except Exception as e:
+                    print(e)
+            else:
+                print(f"The id '{recruiter.recr_id}' is already used.")
 
 
 async def main():
