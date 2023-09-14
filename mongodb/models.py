@@ -11,3 +11,4 @@ class Recruiter(Document):
     created = DateTimeField(default=datetime.now())
     connection = BooleanField(default=False)
     reply = BooleanField(default=False)
+    reason = StringField(max_length=200, default="")
