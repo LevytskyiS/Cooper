@@ -89,8 +89,13 @@ async def activity_cmd(msg: types.Message):
 
 @dp.message_handler(commands=["prague"])
 async def prague_flats_cmd(msg: types.Message):
-    csv_file = await SearchFlats.get_new_flats()
+    new_flats, csv_file = await SearchFlats.get_new_flats()
     await bot.send_document(chat_id=msg.from_user.id, document=InputFile(csv_file))
+
+    if new_flats:
+        await msg.answer(text=f"{new_flats} flat/s was/were found.")
+    else:
+        await msg.answer(text="No new flats were found.")
 
 
 @dp.message_handler(commands=["job"])

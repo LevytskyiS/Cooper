@@ -82,6 +82,7 @@ class Bezrealitky:
                     flats += articles
                 else:
                     continue
+
         return flats
 
     @staticmethod
@@ -92,7 +93,7 @@ class Bezrealitky:
             location = (
                 flat.find(
                     "h2",
-                    class_="PropertyCard_propertyCardHeadline___diKI mt-4 mt-md-0 mb-0",
+                    class_="PropertyCard_propertyCardHeadline___diKI mt-md-0 mt-4 mb-0",
                 )
                 .find(
                     "span",
@@ -103,7 +104,7 @@ class Bezrealitky:
 
             link = flat.find(
                 "h2",
-                class_="PropertyCard_propertyCardHeadline___diKI mt-4 mt-md-0 mb-0",
+                class_="PropertyCard_propertyCardHeadline___diKI mt-md-0 mt-4 mb-0",
             ).find("a")["href"]
 
             flat_id = re.findall("\d{3,10}", link)[0]
@@ -146,6 +147,8 @@ class SearchFlats:
     @staticmethod
     async def get_csv(flats: list):
         csv_file = "data/flats.csv"
+        number_of_rows = len(pd.read_csv(csv_file)["date"])
+        number_of_new_rows = 0
 
         for data in flats:
             if data:
@@ -168,8 +171,8 @@ class SearchFlats:
                             "link": links,
                         }
                     )
-
                     ndf = ndf.sort_values(by="price", ascending=False).reset_index()
+                    number_of_new_rows += len(ndf["date"])
                     df_to_save = pd.concat([df, ndf]).reset_index()
                     df_to_save.to_csv(
                         csv_file, columns=["date", "f_id", "price", "location", "link"]
@@ -177,7 +180,7 @@ class SearchFlats:
                 else:
                     continue
 
-        return csv_file
+        return number_of_new_rows, csv_file
 
     @staticmethod
     async def check_existing_ids(df: pd.DataFrame, data: list):
@@ -195,11 +198,17 @@ class SearchFlats:
 
     @staticmethod
     async def send_me_new_flats():
-        csv_file = await SearchFlats.get_new_flats()
+        new_flats, csv_file = await SearchFlats.get_new_flats()
         await bot.send_document(chat_id=MY_ID, document=InputFile(csv_file))
+        if new_flats:
+            await bot.send_message(
+                chat_id=MY_ID, text=f"{new_flats} flat/s was/were found."
+            )
+        else:
+            await bot.send_message(chat_id=MY_ID, text=f"No new flats were found.")
 
 
 # asyncio.run(SearchFlats.send_me_new_flats())
 
 # df = pd.DataFrame(columns=["date", "f_id", "price", "location", "link"])
-# df.to_csv("data/flats.csv")
+# df.to_csv("data/flats2.csv")
