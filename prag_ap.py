@@ -12,13 +12,15 @@ from aiogram.types.input_file import InputFile
 from ch_driver import GetChromeDriver
 from conf import bot, MY_ID
 
-
 NUMS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 
 class PragueApartments:
+    """Collect data from sreality."""
+
     @staticmethod
     async def get_page_source():
+        """Get page source"""
         driver = await GetChromeDriver.get_chrome_driver()
         url = "https://www.sreality.cz/hledani/pronajem/byty/praha-1,praha-2,praha-3,praha-7?velikost=1%2B1,2%2Bkk&cena-od=0&cena-do=15000"
         # url = "https://www.sreality.cz/hledani/pronajem/byty/praha-7,praha-3,praha-2,praha-1?velikost=1%2B1,2%2Bkk&cena-od=0&cena-do=25000"
@@ -32,6 +34,7 @@ class PragueApartments:
 
     @staticmethod
     async def get_basic_data():
+        """Collect appartments' data."""
         result = []
         page = await PragueApartments.get_page_source()
         soup = BeautifulSoup(page, "lxml")
@@ -58,6 +61,8 @@ class PragueApartments:
 
 
 class Bezrealitky:
+    """Collect data from bezrealitky."""
+
     @staticmethod
     async def find_flats() -> list:
         flats = []
@@ -87,6 +92,7 @@ class Bezrealitky:
 
     @staticmethod
     async def get_clean_data(flats: list):
+        """Parse collected ads."""
         result = []
 
         for flat in flats:
@@ -127,6 +133,7 @@ class Bezrealitky:
 
     @staticmethod
     async def get_basic_data():
+        """Collect new flats for rent."""
         flats = await Bezrealitky.find_flats()
         if flats:
             clean_data = await Bezrealitky.get_clean_data(flats)
@@ -138,6 +145,7 @@ class Bezrealitky:
 class SearchFlats:
     @staticmethod
     async def get_new_flats():
+        """Collect new flats for rent at bezrealitky and sreality."""
         flats = await asyncio.gather(
             Bezrealitky.get_basic_data(), PragueApartments.get_basic_data()
         )
@@ -146,6 +154,7 @@ class SearchFlats:
 
     @staticmethod
     async def get_csv(flats: list):
+        """Prepare a csv-file with collected appartments."""
         csv_file = "data/flats.csv"
         number_of_rows = len(pd.read_csv(csv_file)["date"])
         number_of_new_rows = 0
@@ -184,6 +193,7 @@ class SearchFlats:
 
     @staticmethod
     async def check_existing_ids(df: pd.DataFrame, data: list):
+        """Check collected appartments' ids."""
         result = []
         df_ids = df["f_id"]
         df_ids = [int(i) for i in df_ids]
@@ -198,6 +208,7 @@ class SearchFlats:
 
     @staticmethod
     async def send_me_new_flats():
+        """Send file with new appartments to Telegram Bot."""
         new_flats, csv_file = await SearchFlats.get_new_flats()
         await bot.send_document(chat_id=MY_ID, document=InputFile(csv_file))
         if new_flats:
@@ -209,6 +220,5 @@ class SearchFlats:
 
 
 # asyncio.run(SearchFlats.send_me_new_flats())
-
 # df = pd.DataFrame(columns=["date", "f_id", "price", "location", "link"])
 # df.to_csv("data/flats2.csv")

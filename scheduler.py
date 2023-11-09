@@ -1,7 +1,5 @@
 import aioschedule
-
 import asyncio
-from pytz import timezone
 
 from quotes import MotivationalQuote
 from prag_ap import SearchFlats
