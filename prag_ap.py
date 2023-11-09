@@ -46,7 +46,10 @@ class PragueApartments:
             link = "https://www.sreality.cz" + flat.find("h2").find("a")["href"]
             flat_id = link.split("/")[-1]
             price_ = flat.find("span", class_="norm-price").text.split("Kč")[0].strip()
-            price = int("".join([x for x in price_ if x in NUMS]))
+            try:
+                price = int("".join([x for x in price_ if x in NUMS]))
+            except ValueError as e:
+                continue
             location = flat.find("span", class_="locality ng-binding").text
             result.append(
                 {
