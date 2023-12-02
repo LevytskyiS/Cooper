@@ -16,6 +16,7 @@ from chuck import ChuckJokes
 from bored import get_activity
 from prag_ap import SearchFlats
 from jobcz.vacancies import NewVacancies
+from youtube_downloader import get_youtube_video, remove_downloaded_video
 
 
 async def on_startup(_):
@@ -103,6 +104,22 @@ async def new_jobs_cmd(msg: types.Message):
     message, csv_file = await NewVacancies.main()
     await msg.answer(text=message)
     await bot.send_document(chat_id=msg.from_user.id, document=InputFile(csv_file))
+
+
+@dp.message_handler(lambda msg: msg.text.startswith("https://www.youtube.com"))
+async def download_yt_video(msg: types.Message):
+    video_path = await get_youtube_video(msg.text)
+
+    if video_path:
+        await bot.send_video(
+            chat_id=msg.from_user.id,
+            video=InputFile(video_path),
+            width=1280,
+            height=720,
+        )
+        await remove_downloaded_video(video_path)
+    else:
+        await msg.answer(text="The file size is grater than 50 MB")
 
 
 if __name__ == "__main__":
