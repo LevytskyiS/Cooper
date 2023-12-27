@@ -17,6 +17,7 @@ from bored import get_activity
 from jobcz.vacancies import NewVacancies
 from prag_ap import SearchFlats
 from youtube.youtube_downloader import get_youtube_video, remove_downloaded_video
+from celeryconf.tasks import flats_func
 
 
 async def on_startup(_):
@@ -90,13 +91,14 @@ async def activity_cmd(msg: types.Message):
 
 @dp.message_handler(commands=["prague"])
 async def prague_flats_cmd(msg: types.Message):
-    new_flats, csv_file = await SearchFlats.get_new_flats()
-    await bot.send_document(chat_id=msg.from_user.id, document=InputFile(csv_file))
+    flats_func.delay()
+    # new_flats, csv_file = flats_func.delay()
+    # await bot.send_document(chat_id=msg.from_user.id, document=InputFile(csv_file))
 
-    if new_flats:
-        await msg.answer(text=f"{new_flats} flat/s was/were found.")
-    else:
-        await msg.answer(text="No new flats were found.")
+    # if new_flats:
+    #     await msg.answer(text=f"{new_flats} flat/s was/were found.")
+    # else:
+    #     await msg.answer(text="No new flats were found.")
 
 
 @dp.message_handler(commands=["job"])

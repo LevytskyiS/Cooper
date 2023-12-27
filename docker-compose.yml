@@ -1,0 +1,29 @@
+version: "3"
+services:
+  # app:
+  #   container_name: cooper_app
+  #   build: .
+  #   command: python app.py
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+  celery_worker:
+    container_name: celery_worker
+    build: 
+      context: .
+      # dockerfile: Dockerfile
+    command: ["celery", "-A", "celeryconf.tasks", "worker", "-l", "info", "--pool=eventlet"]
+    depends_on:
+      - redis
+    # volumes:
+    #   - ./:/app/
+  flower:
+    container_name: flower
+    build: .
+    command: celery -A celeryconf.tasks flower -l info --pool=eventlet
+    ports: 
+      - "5555:5555"
+    depends_on:
+      - redis
+      - celery_worker

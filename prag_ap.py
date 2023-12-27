@@ -233,7 +233,9 @@ class SearchFlats:
     async def send_me_new_flats():
         """Send file with new appartments to Telegram Bot."""
         new_flats, csv_file = await SearchFlats.get_new_flats()
+
         await bot.send_document(chat_id=MY_ID, document=InputFile(csv_file))
+
         if new_flats:
             await bot.send_message(
                 chat_id=MY_ID, text=f"{new_flats} flat/s was/were found."
