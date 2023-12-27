@@ -1,1 +1,0 @@
-C:\Users\Berzerk\Documents\GitHub\Cooper\venv\Scripts\python.exe C:\Users\Berzerk\Documents\GitHub\Cooper\win_pr.py

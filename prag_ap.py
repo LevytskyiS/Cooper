@@ -68,6 +68,9 @@ class Bezrealitky:
 
     @staticmethod
     async def find_flats() -> list:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
         flats = []
         urls = [
             "https://www.bezrealitky.cz/vyhledat?offerType=PRONAJEM&estateType=BYT&disposition=DISP_1_1&disposition=DISP_2_KK&priceTo=15000&regionOsmIds=R20000063962&osm_value=Praha+3%2C+Praha%2C+okres+Hlavní+město+Praha%2C+Hlavní+město+Praha%2C+Praha%2C+Česko",  # Prague 3
@@ -76,20 +79,37 @@ class Bezrealitky:
             "https://www.bezrealitky.cz/vyhledat?offerType=PRONAJEM&estateType=BYT&disposition=DISP_1_1&disposition=DISP_2_KK&priceTo=15000&regionOsmIds=R20000064370&osm_value=Praha+8%2C+Praha%2C+okres+Hlavní+město+Praha%2C+Hlavní+město+Praha%2C+Praha%2C+Česko",  # Prague 8
         ]
 
-        for url in urls:
-            response = requests.get(url)
-            time.sleep(random.randint(1, 3))
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, "lxml")
+        # with open("flat.txt", "w", encoding="utf-8") as fh:
+        #     fh.write(str(page))
 
-                articles = soup.find_all(
-                    "article",
-                    class_="PropertyCard_propertyCard__moO_5 propertyCard PropertyCard_propertyCard--landscape__XvPmC",
-                )
-                if articles:
-                    flats += articles
-                else:
-                    continue
+        # with open("flat.txt", "r", encoding="utf-8") as fh:
+        #     page = fh.read()
+
+        # soup = BeautifulSoup(page, "lxml")
+        # articles = soup.find_all(
+        #     "article",
+        #     class_="PropertyCard_propertyCard__moO_5 propertyCard PropertyCard_propertyCard--landscape__XvPmC",
+        # )
+        # flats.append(articles)
+        for url in urls:
+            driver = await GetChromeDriver.get_chrome_driver()
+            driver.get(url)
+            time.sleep(2)
+            page = driver.page_source
+            driver.close()
+            driver.quit()
+
+            time.sleep(random.randint(1, 3))
+            soup = BeautifulSoup(page, "lxml")
+
+            articles = soup.find_all(
+                "article",
+                class_="PropertyCard_propertyCard__moO_5 propertyCard PropertyCard_propertyCard--landscape__XvPmC",
+            )
+            if articles:
+                flats += articles
+            else:
+                continue
 
         return flats
 
@@ -225,3 +245,5 @@ class SearchFlats:
 # asyncio.run(SearchFlats.send_me_new_flats())
 # df = pd.DataFrame(columns=["date", "f_id", "price", "location", "link"])
 # df.to_csv("data/flats2.csv")
+
+# asyncio.run(Bezrealitky.get_basic_data())

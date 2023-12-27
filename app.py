@@ -14,9 +14,9 @@ from scheduler import schedule_func
 from pokemon import SendPokemon
 from chuck import ChuckJokes
 from bored import get_activity
-from prag_ap import SearchFlats
 from jobcz.vacancies import NewVacancies
-from youtube_downloader import get_youtube_video, remove_downloaded_video
+from prag_ap import SearchFlats
+from youtube.youtube_downloader import get_youtube_video, remove_downloaded_video
 
 
 async def on_startup(_):
@@ -106,7 +106,7 @@ async def new_jobs_cmd(msg: types.Message):
     await bot.send_document(chat_id=msg.from_user.id, document=InputFile(csv_file))
 
 
-@dp.message_handler(lambda msg: msg.text.startswith("https://www.youtube.com"))
+@dp.message_handler(lambda msg: "youtube.com" in msg.text)
 async def download_yt_video(msg: types.Message):
     video_path = await get_youtube_video(msg.text)
 
