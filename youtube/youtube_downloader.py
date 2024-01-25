@@ -4,8 +4,6 @@ from pprint import pprint
 
 from pytube import YouTube
 
-vid_url = "https://www.youtube.com/watch?v=r_0JjYUe5jo&ab_channel=LyricalLemonade"
-
 
 async def get_youtube_video(url: str) -> str:
     download_folder = "./youtube"
